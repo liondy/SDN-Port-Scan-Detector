@@ -1,31 +1,27 @@
 <?php
-require 'functions.php';
+require 'pagination.php';
 
-$result = export_log();
+$batas = 5;
 
+$halaman = isset($_POST['halaman']) ? (int)$_POST['halaman'] : 1;
+$halaman_awal = ($halaman > 1) ? ($halaman * $batas) - $batas : 0;
+
+echo $halaman_awal;
+
+$result = export_log($all_timestamp, $halaman_awal, $batas);
+
+$i = $halaman_awal + 1;
+foreach ($result as $row) :
 ?>
-<table border="1" cellpadding="10" cellspacing="10">
-  <tr>
-    <th>No.</th>
-    <th>Timestamp</th>
-    <th>Source Address</th>
-    <th>Destination Address</th>
-    <th>Port Scanned</th>
-    <th>Protocol</th>
-    <th>Teknik</th>
-    <th>Flags</th>
+  <?php $date = explode(" ", $row["Timestamp"]) ?>
+  <tr class=<?= $date == date("Y-m-d") ? "table-danger" : "table-warning"; ?>>
+    <td><?= $i++; ?></td>
+    <td><?= $row["Timestamp"]; ?></td>
+    <td><?= $row["Source"]; ?></td>
+    <td><?= $row["Destination"]; ?></td>
+    <td><?= $row["Ports"]; ?></td>
+    <td><?= $row["Protokol"]; ?></td>
+    <td><?= $row["NamaTeknik"]; ?></td>
+    <td><?= $row["Flags"]; ?></td>
   </tr>
-  <?php $i = 1 ?>
-  <?php foreach ($result as $row) : ?>
-    <tr>
-      <td><?= $i++; ?></td>
-      <td><?= $row["Timestamp"]; ?></td>
-      <td><?= $row["Source"]; ?></td>
-      <td><?= $row["Destination"]; ?></td>
-      <td><?= $row["Ports"]; ?></td>
-      <td><?= $row["Protokol"]; ?></td>
-      <td><?= $row["NamaTeknik"]; ?></td>
-      <td><?= $row["Flags"]; ?></td>
-    </tr>
-  <?php endforeach; ?>
-</table>
+<?php endforeach; ?>
