@@ -6,9 +6,9 @@ $batas = 5;
 $halaman = isset($_POST['halaman']) ? (int)$_POST['halaman'] : 1;
 $halaman_awal = ($halaman > 1) ? ($halaman * $batas) - $batas : 0;
 
-echo $halaman_awal;
+$filters = isset($_POST['filter']) ? $_POST['filter'] : "";
 
-$result = export_log($all_timestamp, $halaman_awal, $batas);
+$result = export_log($all_timestamp, $halaman_awal, $batas, $filters);
 
 $i = $halaman_awal + 1;
 foreach ($result as $row) :
