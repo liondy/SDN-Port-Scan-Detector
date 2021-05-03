@@ -44,7 +44,7 @@ $(document).ready(function () {
   });
 
   $(".changePage").on("click", function (e) {
-    e.preventDefault();
+    // e.preventDefault();
     let pageTo = $(this).attr("href");
     console.log(pageTo);
     console.log("changePage");
