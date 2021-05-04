@@ -22,32 +22,19 @@
       </p>
       <div class="collapse" id="toggleFilter">
         <div class="card card-body">
-          <form class="filter" action="pagination.php" method="post">
+          <form class="filter" method="post">
             <div class="input-group">
               <span class="input-group-text">Source and Destination</span>
+              <input type="hidden" name="page" value=<?= $data["halaman"] ? $data["halaman"] : 1; ?>>
               <input type="text" aria-label="Source" class="form-control" list="listSourceIP" placeholder="IP Address Asal" name="src" id="src">
               <input type="text" aria-label="Destination" class="form-control" list="listDestIP" placeholder="IP Address Tujuan" name="dst" id="dst">
               <datalist id="listSourceIP">
-                <?php
-                echo "Halaman: " . $total_halaman;
-                $sourceIP = [];
-                $destIP = [];
-                foreach ($all_timestamp as $timestamp) {
-                  $curTimestamp = $timestamp["Timestamp"]; #extract each timestamp
-                  $curLogs = getLogs($curTimestamp); #getLogByTimestamp
-                  if (!in_array($curLogs[0]["Source"], $sourceIP)) {
-                    $sourceIP[] = $curLogs[0]["Source"];
-                  }
-                  if (!in_array($curLogs[0]["Destination"], $destIP)) {
-                    $destIP[] = $curLogs[0]["Destination"];
-                  }
-                }
-                foreach ($sourceIP as $source) : ?>
+                <?php foreach ($data["sources"] as $source) : ?>
                   <option value="<?= $source; ?>">
                   <?php endforeach; ?>
               </datalist>
               <datalist id="listDestIP">
-                <?php foreach ($destIP as $dest) : ?>
+                <?php foreach ($data["destinations"] as $dest) : ?>
                   <option value="<?= $dest; ?>">
                   <?php endforeach; ?>
               </datalist>

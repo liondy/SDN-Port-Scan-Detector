@@ -3,30 +3,15 @@ class Log
 {
   private $table;
   private $table_log_port;
-  private $table_teknik;
   private $db;
+  private $logs;
 
-  private $idLog;
-  private $timestamp;
-  private $source;
-  private $destination;
-  private $idTeknik;
-  // private $ports;
-  // private $teknik;
-  // private $protocol;
-  // private $flags;
-
-  public function __construct($table_log_port)
+  public function __construct()
   {
     $this->table = 'log';
     $this->db = new Database;
-    $this->table_log_port = $table_log_port;
-
-    $this->idLog = 'idL';
-    $this->timestamp = 'timestamp';
-    $this->source = 'source';
-    $this->destination = 'destination';
-    $this->idTeknik = 'idT';
+    $this->table_log_port = new Log_Port;
+    $this->logs = [];
   }
 
   public function exportLog()
@@ -35,7 +20,7 @@ class Log
     $logs = [];
     $i = 0;
     foreach ($all_timestamps as $curTimestamp) {
-      $timestamp = $curTimestamp[$this->timestamp]; #extract each timestamp
+      $timestamp = $curTimestamp["timestamp"]; #extract each timestamp
 
       $curLogs = $this->getLogs($timestamp);
 
@@ -47,7 +32,7 @@ class Log
 
       //for each log, find all port
       foreach ($curLogs as $log) {
-        $curPort = $this->table_log_port->getPort($log[$this->idLog]);
+        $curPort = $this->table_log_port->getPort($log["idL"]);
 
         //for each port in each log, add them to curPorts
         foreach ($curPort as $port) {
@@ -69,30 +54,47 @@ class Log
       //add presentation port from current timestamp to logs
       $logs[$i++]["ports"] = $ports;
     }
+    $this->logs = $logs;
     return $logs;
+  }
+
+  public function extractAllSource()
+  {
+    return array_unique(array_column($this->logs, "source"));
+  }
+
+  public function extractAllDestination()
+  {
+    return array_unique(array_column($this->logs, "destination"));
   }
 
   private function getAllTimestamps()
   {
-    $timestamps = $this->db->query("select DISTINCT(`$this->table`.`$this->timestamp`) from `$this->table`");
+    $timestamps = $this->db->query("select DISTINCT(`$this->table`.`timestamp`) from `$this->table`");
     return array_reverse($timestamps);
   }
 
   private function getLogs($timestamp, $filters = null)
   {
-    $condition = "where `$this->table`.`$this->timestamp` = '" . $timestamp . "'";
-    // echo $timestamp . "<br>";
-    if ($filters) {
-      if ($filters[$this->source] != "") {
-        $condition .= " and `$this->table`.`$this->source` = '" . $filters[$this->source] . "'";
+    if (isset($timestamp)) {
+      $timestamp = $this->db->escapeString($timestamp);
+      $condition = "where `$this->table`.`timestamp` = '$timestamp'";
+
+      if ($filters) {
+        if ($filters["source"] != "") {
+          $src = $this->db->escapeString($filters["source"]);
+          $condition .= " and `$this->table`.`source` = '$src'";
+        }
+        if ($filters["destination"] != "") {
+          $dst = $this->db->escapeString($filters["destination"]);
+          $condition .= " and `$this->table`.`destination` = '$dst'";
+        }
       }
-      if ($filters[$this->destination] != "") {
-        $condition .= " and `$this->table`.`$this->destination` = '" . $filters[$this->destination] . "'";
-      }
+
+      $get_logs_by_timestamp = "select * from `$this->table` inner join `teknik` on `$this->table`.`idT` = `teknik`.`idT` $condition order by `$this->table`.`idL`";
+      $curLogs = $this->db->query($get_logs_by_timestamp);
+      return $curLogs;
     }
-    $get_logs_by_timestamp = "select * from `$this->table` inner join `teknik` on `$this->table`.`idT` = `teknik`.`idT` " . $condition . " order by `$this->table`.`$this->idLog`";
-    $curLogs = $this->db->query($get_logs_by_timestamp);
-    return $curLogs;
   }
 
   private function getIP($type)
