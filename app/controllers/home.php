@@ -6,10 +6,14 @@ class Home extends Controller
 
   public function index($page = 1, $src = "", $dst = "")
   {
-    if ($src != "" || $dst != "") {
-      echo "masuk";
+    echo "<br>controller home: <br>";
+    if ($src != "") {
       $this->filters["src"] = $src;
+      $data["src"] = $src;
+    }
+    if ($dst != "") {
       $this->filters["dst"] = $dst;
+      $data["dst"] = $src;
     }
     var_dump($this->filters);
     //set batas pagination
@@ -35,7 +39,7 @@ class Home extends Controller
 
     //paginate the data, will be used in content table logs
     $data["logs"] = $this->paginate($data["logs"], $page, $pagination);
-    $data["iteration"] = ($page > 1) ? ($page * $pagination) - $pagination : $page;
+    $data["iteration"] = ($page > 1) ? ($page * $pagination) - $pagination : 0;
 
     //render view the paginated logs
     $this->view('templates/header', $data);

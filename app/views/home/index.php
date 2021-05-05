@@ -1,5 +1,5 @@
 <?php
-$i = $data["iteration"];
+$i = $data["iteration"] + 1;
 foreach ($data["logs"] as $row) :
   $date = explode(" ", $row["timestamp"]); ?>
   <tr class=<?= $date[0] == date("Y-m-d") ? "table-danger" : "table-warning"; ?>>

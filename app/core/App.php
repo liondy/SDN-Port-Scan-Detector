@@ -40,17 +40,17 @@ class App
   private function parseURL()
   {
     $url = [];
-    if ($_SERVER['REQUEST_METHOD'] == "POST") {
-      if (isset($_POST["page"])) {
-        $part = $_POST["page"];
+    if ($_SERVER['REQUEST_METHOD'] == "GET") {
+      if (isset($_GET["page"])) {
+        $part = $_GET["page"];
         $url["page"] = $this->filterURL($part);
       }
-      if (isset($_POST["src"])) {
-        $part = $_POST["src"];
+      if (isset($_GET["src"])) {
+        $part = $_GET["src"];
         $url["src"] = $this->filterURL($part);
       }
-      if (isset($_POST["dst"])) {
-        $part = $_POST["dst"];
+      if (isset($_GET["dst"])) {
+        $part = $_GET["dst"];
         $url["dst"] = $this->filterURL($part);
       }
     } else if (isset($_GET['page'])) {
