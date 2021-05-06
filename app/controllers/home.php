@@ -44,7 +44,6 @@ class Home extends Controller
     } else if ($page > $data["total_halaman"]) {
       $page = 1;
     }
-    echo $page;
     $data["halaman"] = $page;
     $data["previous"] = $data["halaman"] - 1;
     $data["next"] = $data["halaman"] + 1;
