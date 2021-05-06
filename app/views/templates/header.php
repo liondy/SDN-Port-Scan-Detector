@@ -27,6 +27,7 @@
             <div class="input-group">
               <span class="input-group-text">Source and Destination</span>
               <input type="hidden" name="page" id="page" value=<?= $data["halaman"]; ?>>
+              <input type="hidden" name="total_halaman" id="total_halaman" value=<?= $data["total_halaman"]; ?>>
               <input type="hidden" name="srcLst" id="srcLst" value=<?= json_encode($data["sources"]); ?>>
               <input type="hidden" name="dstLst" id="dstLst" value=<?= json_encode($data["destinations"]); ?>>
               <input type="text" aria-label="Source" class="form-control" list="listSourceIP" placeholder="IP Address Asal" name="src" id="src">

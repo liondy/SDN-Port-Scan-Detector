@@ -1,6 +1,6 @@
 <?php
 $i = $data["iteration"] + 1;
-foreach ($data["logs"] as $row) :
+foreach ($data["filtered"] as $row) :
   $date = explode(" ", $row["timestamp"]); ?>
   <tr class=<?= $date[0] == date("Y-m-d") ? "table-danger" : "table-warning"; ?>>
     <td><?= $i++; ?></td>

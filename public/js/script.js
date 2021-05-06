@@ -38,22 +38,27 @@ $(document).ready(function () {
     e.preventDefault();
     let sourceList = Object.values(JSON.parse($("#srcLst").val()));
     let destinationList = Object.values(JSON.parse($("#dstLst").val()));
+    let totalHalaman = Object.values(JSON.parse($("#total_halaman").val()));
     srcList = sourceList;
     dstList = destinationList;
+    console.log(dstList);
     let page = $("#page").val();
+    if (page > totalHalaman) {
+      page = 1;
+    }
     let src = $("#src").val();
     let dst = $("#dst").val();
+    let filters = `?page=${page}`;
     if (src !== "") {
-      if (!validInput(src, srcList)) {
-        src = "";
+      if (validInput(src, srcList)) {
+        filters += `&src=${src}`;
       }
     }
     if (dst !== "") {
-      if (!validInput(dst, dstList)) {
-        dst = "";
+      if (validInput(dst, dstList)) {
+        filters += `&dst=${dst}`;
       }
     }
-    let filters = `?page=${page}&src=${src}&dst=${dst}`;
     execute(filters);
   });
 
@@ -61,20 +66,22 @@ $(document).ready(function () {
     e.preventDefault();
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
+    let sourceList = Object.values(JSON.parse($("#srcLst").val()));
+    let destinationList = Object.values(JSON.parse($("#dstLst").val()));
     let nextPage = $(this).attr("aria-label");
+    let filters = `?page=${nextPage}`;
     let src = urlParams.get("src");
     if (src !== "") {
-      if (!validInput(src, srcList)) {
-        src = "";
+      if (validInput(src, sourceList)) {
+        filters += `&src=${src}`;
       }
     }
     let dst = urlParams.get("dst");
     if (dst !== "") {
-      if (!validInput(dst, dstList)) {
-        dst = "";
+      if (validInput(dst, destinationList)) {
+        filters += `&dst=${dst}`;
       }
     }
-    let filters = `?page=${nextPage}&src=${src}&dst=${dst}`;
     execute(filters);
   });
 
@@ -90,7 +97,7 @@ $(document).ready(function () {
     return valid;
   }
 
-  function execute(get) {
-    window.location.replace(`http://liondy/status/public/${get}`);
+  function execute(filter) {
+    window.location.replace(`http://liondy/status/public/${filter}`);
   }
 });

@@ -31,7 +31,7 @@ class App
       $this->params = $url;
     }
 
-    var_dump($this->params);
+    // var_dump($this->params);
 
     //execute controller & method with params if exist
     call_user_func_array([$this->controller, $this->method], $this->params);
@@ -41,22 +41,15 @@ class App
   {
     $url = [];
     if ($_SERVER['REQUEST_METHOD'] == "GET") {
-      if (isset($_GET["page"])) {
-        $part = $_GET["page"];
-        $url["page"] = $this->filterURL($part);
+      $part = $_GET["page"];
+      if ($part == "" || is_string($part)) {
+        $part = 1;
       }
-      if (isset($_GET["src"])) {
-        $part = $_GET["src"];
-        $url["src"] = $this->filterURL($part);
-      }
-      if (isset($_GET["dst"])) {
-        $part = $_GET["dst"];
-        $url["dst"] = $this->filterURL($part);
-      }
-    } else if (isset($_GET['page'])) {
-      // $url = rtrim($_GET['page'], '/');
-      $part = $_GET['page'];
-      $url["page"] = $this->filterURL($part);
+      $url[] = $this->filterURL($part);
+      $part = $_GET["src"];
+      $url[] = $this->filterURL($part);
+      $part = $_GET["dst"];
+      $url[] = $this->filterURL($part);
     }
     return $url;
   }
