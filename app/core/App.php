@@ -42,10 +42,11 @@ class App
     $url = [];
     if ($_SERVER['REQUEST_METHOD'] == "GET") {
       $part = $_GET["page"];
-      if ($part == "" || is_string($part)) {
-        $part = 1;
+      $page = (int)$this->filterURL($part);
+      if ($page == 0) {
+        $page = 1;
       }
-      $url[] = $this->filterURL($part);
+      $url[] = $page;
       $part = $_GET["src"];
       $url[] = $this->filterURL($part);
       $part = $_GET["dst"];
