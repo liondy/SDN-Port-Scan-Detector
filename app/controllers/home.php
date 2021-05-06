@@ -39,8 +39,6 @@ class Home extends Controller
     //for pagination, will be used in footer
     $jumlah_data = count($data["filtered"]);
     $data["total_halaman"] = ceil($jumlah_data / $pagination);
-    echo $data["total_halaman"];
-    echo $page;
     if ($jumlah_data == 0) {
       $page = 0;
     } else if ($page > $data["total_halaman"]) {
