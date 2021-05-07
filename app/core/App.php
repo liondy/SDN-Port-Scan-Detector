@@ -41,22 +41,71 @@ class App
   {
     $url = [];
     if ($_SERVER['REQUEST_METHOD'] == "GET") {
+      //page
       $part = $_GET["page"];
       $page = (int)$this->filterURL($part);
       if ($page == 0) {
         $page = 1;
       }
       $url[] = $page;
+
+      //source
       $part = $_GET["src"];
       $url[] = $this->filterURL($part);
+
+      //destination
       $part = $_GET["dst"];
       $url[] = $this->filterURL($part);
-      $part = $_GET["tcp"];
-      $stringTCP = $this->filterURL($part);
+
+      //tcp
+      $partTCP = $_GET["tcp"];
+      $stringTCP = $this->filterURL($partTCP);
       $url[] = $stringTCP === 'true' ? true : false;
-      $part = $_GET["udp"];
-      $stringUDP = $this->filterURL($part);
+
+      //udp
+      $partUDP = $_GET["udp"];
+      $stringUDP = $this->filterURL($partUDP);
       $url[] = $stringUDP === 'true' ? true : false;
+
+      //stealth
+      $partSYN = $_GET["syn"];
+      $stringSYN = $this->filterURL($partSYN);
+      $url[] = $stringSYN === 'true' ? true : false;
+
+      //connect
+      $partCon = $_GET["con"];
+      $stringCon = $this->filterURL($partCon);
+      $url[] = $stringCon === 'true' ? true : false;
+
+      //null
+      $partNull = $_GET["null"];
+      $stringNull = $this->filterURL($partNull);
+      $url[] = $stringNull === 'true' ? true : false;
+
+      //fin
+      $partFin = $_GET["fin"];
+      $stringFin = $this->filterURL($partFin);
+      $url[] = $stringFin === 'true' ? true : false;
+
+      //xmas
+      $partXmas = $_GET["xmas"];
+      $stringXmas = $this->filterURL($partXmas);
+      $url[] = $stringXmas === 'true' ? true : false;
+
+      //ack/window
+      $partAck = $_GET["ack"];
+      $stringAck = $this->filterURL($partAck);
+      $url[] = $stringAck === 'true' ? true : false;
+
+      //maimon
+      $partMaimon = $_GET["maimon"];
+      $stringMaimon = $this->filterURL($partMaimon);
+      $url[] = $stringMaimon === 'true' ? true : false;
+
+      //udp scan
+      $partUDPS = $_GET["udpS"];
+      $stringUDPS = $this->filterURL($partUDPS);
+      $url[] = $stringUDPS === 'true' ? true : false;
     }
     return $url;
   }

@@ -4,7 +4,7 @@ class Home extends Controller
 
   private $filters;
 
-  public function index($page = 1, $src = "", $dst = "", $tcp = false, $udp = false)
+  public function index($page = 1, $src = "", $dst = "", $tcp = false, $udp = false, $syn = false, $con = false, $null = false, $fin = false, $xmas = false, $ack = false, $maimon = false, $udpS = false)
   {
     //insert filters
     if ($src != "") {
@@ -26,6 +26,37 @@ class Home extends Controller
       }
     }
 
+    if ((!$syn || !$con || !$null || !$fin || !$xmas || !$ack || !$maimon || !$udpS) && ($syn || $con || $null || $fin || $xmas || $ack || $maimon || $udpS)) {
+      // if ($syn == false && $con == false && $null == false && $fin == false && $xmas == false && $ack == false && $maimon == false && $udpS == false) {
+      // } else {
+      $this->filters["nama_teknik"] = [];
+      if ($syn) {
+        $this->filters["nama_teknik"][] = "STEALTH SCAN";
+      }
+      if ($con) {
+        $this->filters["nama_teknik"][] = "CONNECT SCAN";
+      }
+      if ($null) {
+        $this->filters["nama_teknik"][] = "NULL SCAN";
+      }
+      if ($fin) {
+        $this->filters["nama_teknik"][] = "FIN SCAN";
+      }
+      if ($xmas) {
+        $this->filters["nama_teknik"][] = "XMAS SCAN";
+      }
+      if ($ack) {
+        $this->filters["nama_teknik"][] = "ACK / WINDOW SCAN";
+      }
+      if ($maimon) {
+        $this->filters["nama_teknik"][] = "MAIMON SCAN";
+      }
+      if ($udpS) {
+        $this->filters["nama_teknik"][] = "UDP SCAN";
+        // }
+      }
+    }
+
     // var_dump($this->filters);
 
     //set batas pagination
@@ -35,14 +66,69 @@ class Home extends Controller
     $this->model('Log_Port');
     $log_model = $this->model('Log');
 
+    //get all teknik
+    $data["teknik"] = $this->model('Teknik')->getAllTeknik();
+
     //export all log
-    $data["logs"] = $log_model->exportLog();
+    if (empty($this->filters)) {
+      $data["logs"] = $log_model->exportLog();
+    } else {
+      //export log with filters
+      $data["logs"] = $log_model->exportLog($this->filters);
+
+      $data["message"] = "Filter untuk ";
+      $i = 0;
+      $firstMessage = true;
+
+      foreach (array_keys($this->filters) as $keyFilter) {
+        $jumlah_filter = count($this->filters);
+        if ($jumlah_filter > 1 && $i == $jumlah_filter - 1) {
+          if ($jumlah_filter > 2) {
+            $data["message"] .= ",";
+          }
+          $data["message"] .= " dan ";
+        } else {
+          if (!$firstMessage) {
+            $data["message"] .= ", ";
+          }
+        }
+
+        if ($keyFilter === "nama_teknik") {
+          $firstTeknik = true;
+          $queryTeknik = "Teknik = ";
+          $j = 0;
+
+          foreach ($this->filters[$keyFilter] as $teknik) {
+            $jumlah_teknik = count($this->filters[$keyFilter]);
+            if ($jumlah_teknik > 1 && $j == $jumlah_teknik - 1) {
+              if ($jumlah_teknik > 2) {
+                $queryTeknik .= ",";
+              }
+              $queryTeknik .= " dan ";
+            } else {
+              if (!$firstTeknik) {
+                $queryTeknik .= ", ";
+              }
+            }
+            $queryTeknik .= "$teknik";
+            $j++;
+            $firstTeknik = false;
+          }
+          $data["message"] .= $queryTeknik;
+        } else {
+          $data["message"] .= $keyFilter . " = " . $this->filters[$keyFilter];
+        }
+        $i++;
+        $firstMessage = false;
+      }
+    }
+    // var_dump($data["logs"]);
 
     //check filters
     $data["filtered"] = $data["logs"];
-    if (!empty($this->filters)) {
-      $data["filtered"] = $this->filtered($data["logs"], $this->filters);
-    }
+    // if (!empty($this->filters)) {
+    //   $data["filtered"] = $this->filtered($data["logs"], $this->filters);
+    // }
 
     //will be used in header for filter
     $data["sources"] = $log_model->extractAllSource();
@@ -50,9 +136,11 @@ class Home extends Controller
 
     //for pagination, will be used in footer
     $jumlah_data = count($data["filtered"]);
+    // echo "<br>Jumlah Data: " . $jumlah_data;
     $data["total_halaman"] = ceil($jumlah_data / $pagination);
     if ($jumlah_data == 0) {
       $page = 0;
+      $data["nodata"] = "Tidak ada log berdasarkan filter yang dicari";
     } else if ($page > $data["total_halaman"]) {
       $page = 1;
     }

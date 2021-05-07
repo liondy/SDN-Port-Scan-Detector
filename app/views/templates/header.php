@@ -10,6 +10,9 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
   <script src="./js/script.js" defer></script>
 </head>
 
@@ -34,19 +37,19 @@
               <input type="text" aria-label="Destination" class="form-control" list="listDestIP" placeholder="IP Address Tujuan" name="dst" id="dst">
               <datalist id="listSourceIP">
                 <?php foreach ($data["sources"] as $source) : ?>
-                  <option value="<?= $source; ?>">
+                  <option value="<?= $source["source"]; ?>">
                   <?php endforeach; ?>
               </datalist>
               <datalist id="listDestIP">
                 <?php foreach ($data["destinations"] as $dest) : ?>
-                  <option value="<?= $dest; ?>">
+                  <option value="<?= $dest["destination"]; ?>">
                   <?php endforeach; ?>
               </datalist>
             </div>
             <div class="mt-3">
               <div class="row">
                 <div class="col-3">
-                  <label for="protokol">Tampilkan untuk protokol</label>
+                  <label for="protokol">Tampilkan protokol: </label>
                 </div>
                 <div class="col-4">
                   <div class="form-check form-check-inline">
@@ -62,6 +65,29 @@
                 </div>
               </div>
             </div>
+            <div class="mt-3">
+              <div class="row">
+                <label for="protokol">Tampilkan protokol <span class="protokol"></span> untuk teknik: </label>
+              </div>
+              <div class="row mt-2">
+                <?php foreach ($data["teknik"] as $teknik) : ?>
+                  <div class="col-3 mb-2">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="<?= str_replace("_/_", "_", str_replace(" ", "_", strtolower($teknik["nama_teknik"]))); ?>_checkbox" value="<?= $teknik["nama_teknik"]; ?>">
+                      <label class="form-check-label"><?= $teknik["nama_teknik"]; ?></label>
+                    </div>
+                  </div>
+                <?php endforeach; ?>
+              </div>
+            </div>
+            <div class="mt-2 row">
+              <div class="col">
+                <label for="datetime" class="col-form-label">Pilih rentang waktu</label>
+              </div>
+              <div class="col-10">
+                <input type="text" class="form-control" name="datetimes" id="datetimes" />
+              </div>
+            </div>
             <div class="mt-3 float-end">
               <input type="submit" class="btn btn-success" value="Apply">
             </div>
@@ -69,11 +95,25 @@
         </div>
       </div>
     </div>
-    <div class="keterangan">
+    <div class="keterangan mt-3">
       <p>Keterangan: </p>
       <p>Baris bewarna merah: Sistem mendeteksi adanya aktivitas port scanning hari ini</p>
-      <p>Baris bewarna kuning: Aktivitas log yang sudah lama terdeteksi oleh sistem</p>
+      <p>Baris bewarna kuning: Aktivitas port scanning yang sudah lama terdeteksi oleh sistem</p>
     </div>
+    <?php if ($data["message"]) : ?>
+      <div class="alert alert-success" role="alert">
+        <div class="row">
+          <div class="col-10">
+            <?= $data["message"]; ?>
+          </div>
+          <div class="col">
+            <div class="float-end">
+              <button type="button" class="btn btn-danger remove">Hapus Filter</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <?php endif; ?>
     <div class="table-responsive">
       <table class="table table-hover table-striped">
         <thead>

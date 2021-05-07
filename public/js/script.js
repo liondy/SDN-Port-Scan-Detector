@@ -34,6 +34,38 @@ $(document).ready(function () {
   //   }
   // }, 60000); // it will refresh your data every 10 sec
 
+  $("#tcpcheckbox").on("click", function (e) {
+    if ($("#tcpcheckbox").prop("checked")) {
+      if ($("#udpcheckbox").prop("checked")) {
+        $(".protokol").html("TCP dan UDP");
+      } else {
+        $(".protokol").html("TCP");
+      }
+    } else {
+      if ($("#udpcheckbox").prop("checked")) {
+        $(".protokol").html("UDP");
+      } else {
+        $(".protokol").html("");
+      }
+    }
+  });
+
+  $("#udpcheckbox").on("click", function (e) {
+    if ($("#udpcheckbox").prop("checked")) {
+      if ($("#tcpcheckbox").prop("checked")) {
+        $(".protokol").html("TCP dan UDP");
+      } else {
+        $(".protokol").html("UDP");
+      }
+    } else {
+      if ($("#tcpcheckbox").prop("checked")) {
+        $(".protokol").html("TCP");
+      } else {
+        $(".protokol").html("");
+      }
+    }
+  });
+
   $(".filter").on("submit", function (e) {
     e.preventDefault();
 
@@ -50,14 +82,14 @@ $(document).ready(function () {
 
     let src = $("#src").val();
     if (src !== "") {
-      if (validInput(src, sourceList)) {
+      if (validInput(src, sourceList, "source")) {
         filters += `&src=${src}`;
       }
     }
 
     let dst = $("#dst").val();
     if (dst !== "") {
-      if (validInput(dst, destinationList)) {
+      if (validInput(dst, destinationList, "destination")) {
         filters += `&dst=${dst}`;
       }
     }
@@ -71,7 +103,50 @@ $(document).ready(function () {
     if (udpChecked) {
       filters += `&udp=true`;
     }
-    execute(filters);
+
+    let synChecked = $("#stealth_scan_checkbox").prop("checked");
+    if (synChecked) {
+      filters += `&syn=true`;
+    }
+
+    let conChecked = $("#connect_scan_checkbox").prop("checked");
+    if (conChecked) {
+      filters += `&con=true`;
+    }
+
+    let nullChecked = $("#null_scan_checkbox").prop("checked");
+    if (nullChecked) {
+      filters += `&null=true`;
+    }
+
+    let finChecked = $("#fin_scan_checkbox").prop("checked");
+    if (finChecked) {
+      filters += `&fin=true`;
+    }
+
+    let xmasChecked = $("#xmas_scan_checkbox").prop("checked");
+    if (xmasChecked) {
+      filters += `&xmas=true`;
+    }
+
+    let ackChecked = $("#ack_window_scan_checkbox").prop("checked");
+    if (ackChecked) {
+      filters += `&ack=true`;
+    }
+
+    let maimonChecked = $("#maimon_scan_checkbox").prop("checked");
+    if (maimonChecked) {
+      filters += `&maimon=true`;
+    }
+
+    let udpScanChecked = $("#udp_scan_checkbox").prop("checked");
+    if (udpScanChecked) {
+      filters += `&udpS=true`;
+    }
+
+    let datetime = $("#datetimes").val();
+    console.log(datetime);
+    // execute(filters);
   });
 
   $(".changePage").on("click", function (e) {
@@ -88,14 +163,14 @@ $(document).ready(function () {
 
     let src = urlParams.get("src");
     if (src !== "") {
-      if (validInput(src, sourceList)) {
+      if (validInput(src, sourceList, "source")) {
         filters += `&src=${src}`;
       }
     }
 
     let dst = urlParams.get("dst");
     if (dst !== "") {
-      if (validInput(dst, destinationList)) {
+      if (validInput(dst, destinationList, "destination")) {
         filters += `&dst=${dst}`;
       }
     }
@@ -113,10 +188,15 @@ $(document).ready(function () {
     execute(filters);
   });
 
-  function validInput(input, list) {
+  $(".remove").on("click", function (e) {
+    execute("");
+  });
+
+  function validInput(input, list, type) {
     let valid = false;
     list.every((ip) => {
-      if (ip === input) {
+      console.log(ip[type]);
+      if (ip[type] === input) {
         valid = true;
         return false;
       }
@@ -128,4 +208,31 @@ $(document).ready(function () {
   function execute(filter) {
     window.location.replace(`http://liondy/status/public/${filter}`);
   }
+
+  $(function () {
+    $('input[name="datetimes"]').daterangepicker({
+      showDropdowns: true,
+      timePicker: true,
+      timePicker24Hour: true,
+      startDate: moment().startOf("hour"),
+      endDate: moment().startOf("hour").add(32, "hour"),
+      locale: {
+        format: "DD MMM YYYY HH:mm",
+        monthNames: [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ],
+      },
+    });
+  });
 });

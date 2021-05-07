@@ -14,9 +14,9 @@ class Log
     $this->logs = [];
   }
 
-  public function exportLog()
+  public function exportLog($filters = [])
   {
-    $all_timestamps = $this->getAllTimestamps();
+    $all_timestamps = $this->getAllTimestamps($filters);
     $logs = [];
     $i = 0;
     foreach ($all_timestamps as $curTimestamp) {
@@ -60,17 +60,61 @@ class Log
 
   public function extractAllSource()
   {
-    return array_unique(array_column($this->logs, "source"));
+    $query = "select distinct(`$this->table`.`source`) from $this->table";
+    return $this->db->query($query);
+    // return array_unique(array_column($this->logs, "source"));
   }
 
   public function extractAllDestination()
   {
-    return array_unique(array_column($this->logs, "destination"));
+    $query = "select distinct(`$this->table`.`destination`) from $this->table";
+    return $this->db->query($query);
+    // return array_unique(array_column($this->logs, "destination"));
   }
 
-  private function getAllTimestamps()
+  private function getAllTimestamps($filters = [])
   {
-    $timestamps = $this->db->query("select DISTINCT(`$this->table`.`timestamp`) from `$this->table`");
+    // var_dump($filters);
+    // echo "<br>" . count($filters) . "<br>";
+    $query = "select DISTINCT(`$this->table`.`timestamp`) from `$this->table` inner join `teknik` on `$this->table`.`idT` = `teknik`.`idT` inner join `log_port` on `log_port`.`idL` = `log`.`idL`";
+    if (!empty($filters)) {
+      $where = " where ";
+      $firstFilter = true;
+      foreach (array_keys($filters) as $keyFilter) {
+        if (!$firstFilter) {
+          $where .= " and ";
+        }
+        if ($keyFilter === "nama_teknik") {
+          $firstTeknik = true;
+          $queryTeknik = "";
+          if (count($filters[$keyFilter]) > 1) {
+            $queryTeknik .= "(";
+          }
+          foreach ($filters[$keyFilter] as $teknik) {
+            if (!$firstTeknik) {
+              $queryTeknik .= " or ";
+            }
+            $queryTeknik .= $keyFilter . " = " . "'$teknik'";
+            $firstTeknik = false;
+          }
+          if (count($filters[$keyFilter]) > 1) {
+            $queryTeknik .= ")";
+          }
+          $where .= $queryTeknik;
+        } else if ($keyFilter !== "port") {
+          $where .= $keyFilter . " = " . "'$filters[$keyFilter]'";
+        }
+        // echo $keyFilter . "<br>";
+        $firstFilter = false;
+      }
+      $query .= $where;
+      // for ($i = 0; $i < count($filters); $i++) {
+      //   echo array_keys($filters) . "<br>";
+      // }
+    }
+    // echo "<br><br>" . $query . "<br>";
+    $timestamps = $this->db->query($query);
+    // var_dump($timestamps);
     return array_reverse($timestamps);
   }
 
