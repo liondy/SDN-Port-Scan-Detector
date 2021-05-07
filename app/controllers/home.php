@@ -4,7 +4,7 @@ class Home extends Controller
 
   private $filters;
 
-  public function index($page = 1, $src = "", $dst = "")
+  public function index($page = 1, $src = "", $dst = "", $tcp = false, $udp = false)
   {
     //insert filters
     if ($src != "") {
@@ -15,6 +15,18 @@ class Home extends Controller
       $this->filters["destination"] = $dst;
       $data["destination"] = $src;
     }
+
+    if (!$tcp || !$udp) {
+      if ($tcp) {
+        $this->filters["protokol"] = "TCP";
+        // $data["protokol"] = "TCP";
+      } else if ($udp) {
+        $this->filters["protokol"] = "UDP";
+        // $data["protokol"] = "UDP";
+      }
+    }
+
+    // var_dump($this->filters);
 
     //set batas pagination
     $pagination = 5;
@@ -71,7 +83,12 @@ class Home extends Controller
 
   private function isValid($log, $filter)
   {
+    // var_dump($log);
+    // echo "=====================================================================================================================";
+    // var_dump($filter);
     $filtered = array_intersect_key($log, $filter);
+    // echo "=====================================================================================================================";
+    // var_dump($filter);
     return $filter == $filtered;
   }
 

@@ -51,6 +51,12 @@ class App
       $url[] = $this->filterURL($part);
       $part = $_GET["dst"];
       $url[] = $this->filterURL($part);
+      $part = $_GET["tcp"];
+      $stringTCP = $this->filterURL($part);
+      $url[] = $stringTCP === 'true' ? true : false;
+      $part = $_GET["udp"];
+      $stringUDP = $this->filterURL($part);
+      $url[] = $stringUDP === 'true' ? true : false;
     }
     return $url;
   }

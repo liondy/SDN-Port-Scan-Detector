@@ -24,12 +24,12 @@
       <div class="collapse" id="toggleFilter">
         <div class="card card-body">
           <form class="filter">
+            <input type="hidden" name="page" id="page" value=<?= $data["halaman"]; ?>>
+            <input type="hidden" name="total_halaman" id="total_halaman" value=<?= $data["total_halaman"]; ?>>
+            <input type="hidden" name="srcLst" id="srcLst" value=<?= json_encode($data["sources"]); ?>>
+            <input type="hidden" name="dstLst" id="dstLst" value=<?= json_encode($data["destinations"]); ?>>
             <div class="input-group">
               <span class="input-group-text">Source and Destination</span>
-              <input type="hidden" name="page" id="page" value=<?= $data["halaman"]; ?>>
-              <input type="hidden" name="total_halaman" id="total_halaman" value=<?= $data["total_halaman"]; ?>>
-              <input type="hidden" name="srcLst" id="srcLst" value=<?= json_encode($data["sources"]); ?>>
-              <input type="hidden" name="dstLst" id="dstLst" value=<?= json_encode($data["destinations"]); ?>>
               <input type="text" aria-label="Source" class="form-control" list="listSourceIP" placeholder="IP Address Asal" name="src" id="src">
               <input type="text" aria-label="Destination" class="form-control" list="listDestIP" placeholder="IP Address Tujuan" name="dst" id="dst">
               <datalist id="listSourceIP">
@@ -42,6 +42,25 @@
                   <option value="<?= $dest; ?>">
                   <?php endforeach; ?>
               </datalist>
+            </div>
+            <div class="mt-3">
+              <div class="row">
+                <div class="col-3">
+                  <label for="protokol">Tampilkan untuk protokol</label>
+                </div>
+                <div class="col-4">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="tcpcheckbox" value="TCP">
+                    <label class="form-check-label" for="tcpcheckbox">TCP</label>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="udpcheckbox" value="UDP">
+                    <label class="form-check-label" for="udpcheckbox">UDP</label>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="mt-3 float-end">
               <input type="submit" class="btn btn-success" value="Apply">
