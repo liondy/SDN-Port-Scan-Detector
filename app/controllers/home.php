@@ -61,19 +61,50 @@ class Home extends Controller
 
     //insert filters for timestamp
     if ($ds != "" && $ms != "" && $df != "" && $mf != "") {
-      $dateStart = substr($ds, 0, 2);
-      $monthStart = substr($ds, 2, 2);
-      $yearStart = substr($ds, 4);
-      $start = $yearStart . "-" . $monthStart . "-" . $dateStart . " " . $ms . ":00";
-      // echo "Start: " . $start . "<br>";
+      try {
+        $dateStart = substr($ds, 0, 2);
+        $monthStart = substr($ds, 2, 2);
+        $yearStart = substr($ds, 4);
+        $dateFinish = substr($df, 0, 2);
+        $monthFinish = substr($df, 2, 2);
+        $yearFinish = substr($df, 4);
+        $checkHourStart = explode(":", $ms)[0];
+        if ($checkHourStart == "00") {
+          $checkHourStart = 1;
+        } else {
+          $checkHourStart = (int)$checkHourStart;
+        }
 
-      $dateFinish = substr($df, 0, 2);
-      $monthFinish = substr($df, 2, 2);
-      $yearFinish = substr($df, 4);
-      $finish = $yearFinish . "-" . $monthFinish . "-" . $dateFinish . " " . $mf . ":00";
-      // echo "Finish: " . $finish . "<br>";
-      $this->filters["timestamp"][] = $start;
-      $this->filters["timestamp"][] = $finish;
+        $checkMinuteStart = (int)explode(":", $ms)[1];
+        if ($checkMinuteStart == "00") {
+          $checkMinuteStart = 1;
+        } else {
+          $checkMinuteStart = (int)$checkMinuteStart;
+        }
+        $checkHourFinish = (int)explode(":", $mf)[0];
+        if ($checkHourFinish == "00") {
+          $checkHourFinish = 1;
+        } else {
+          $checkHourFinish = (int)$checkHourFinish;
+        }
+        $checkMinuteFinish = (int)explode(":", $mf)[1];
+        if ($checkMinuteFinish == "00") {
+          $checkMinuteFinish = 1;
+        } else {
+          $checkMinuteFinish = (int)$checkMinuteFinish;
+        }
+        if ($checkHourStart > 0 && $checkHourStart <= 24 && $checkHourFinish > 0 && $checkHourFinish <= 24 && $checkMinuteStart > 0 && $checkMinuteStart < 60 && $checkMinuteFinish > 0 && $checkMinuteFinish < 60 && (int)$dateStart && (int)$monthStart && (int)$yearStart && (int)$dateStart <= 31 && (int)$monthStart <= 12 && (int)$yearStart <= 2021 && (int)$dateFinish && (int)$monthFinish && (int)$yearFinish && (int)$dateFinish <= 31 && (int)$monthFinish <= 12 && (int)$yearFinish <= 2021) {
+          $start = $yearStart . "-" . $monthStart . "-" . $dateStart . " " . $ms . ":00";
+          $finish = $yearFinish . "-" . $monthFinish . "-" . $dateFinish . " " . $mf . ":00";
+          $this->filters["timestamp"][] = $start;
+          $this->filters["timestamp"][] = $finish;
+        }
+        // echo "Start: " . $start . "<br>";
+
+        // echo "Finish: " . $finish . "<br>";
+      } catch (Exception $e) {
+        // header("Location: /status/public/");
+      }
     }
 
     // var_dump($this->filters);

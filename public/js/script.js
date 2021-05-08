@@ -160,21 +160,23 @@ $(document).ready(function () {
 
     let datetime = $("#datetimes").val();
     if (datetime) {
-      let timestamps = datetime.split("-");
-      let start = timestamps[0].trim().split(" ");
-      let finish = timestamps[1].trim().split(" ");
-      console.log(start);
-      let numS = months.indexOf(start[1]) + 1;
-      if (numS < 10) {
-        numS = "0" + numS;
-      }
-      let numF = months.indexOf(finish[1]) + 1;
-      if (numF < 10) {
-        numF = "0" + numF;
-      }
-      filters += `&ds=${start[0] + numS + start[2]}&ms=${start[3]}&df=${
-        finish[0] + numF + finish[2]
-      }&mf=${finish[3]}`;
+      try {
+        let timestamps = datetime.split("-");
+        let start = timestamps[0].trim().split(" ");
+        let finish = timestamps[1].trim().split(" ");
+        console.log(start);
+        let numS = months.indexOf(start[1]) + 1;
+        if (numS < 10) {
+          numS = "0" + numS;
+        }
+        let numF = months.indexOf(finish[1]) + 1;
+        if (numF < 10) {
+          numF = "0" + numF;
+        }
+        filters += `&ds=${start[0] + numS + start[2]}&ms=${start[3]}&df=${
+          finish[0] + numF + finish[2]
+        }&mf=${finish[3]}`;
+      } catch (err) {}
     }
     console.log(filters);
     execute(filters);
@@ -216,6 +218,26 @@ $(document).ready(function () {
       filters += `&udp=true`;
     }
 
+    let ds = urlParams.get("ds");
+    if (ds) {
+      filters += `&ds=${ds}`;
+    }
+
+    let ms = urlParams.get("ms");
+    if (ms) {
+      filters += `&ms=${ms}`;
+    }
+
+    let df = urlParams.get("df");
+    if (df) {
+      filters += `&df=${df}`;
+    }
+
+    let mf = urlParams.get("mf");
+    if (mf) {
+      filters += `&mf=${mf}`;
+    }
+
     execute(filters);
   });
 
@@ -243,27 +265,30 @@ $(document).ready(function () {
   $(function () {
     $('input[name="datetimes"]').daterangepicker({
       showDropdowns: true,
+      autoUpdateInput: false,
       timePicker: true,
       timePicker24Hour: true,
-      startDate: moment().startOf("hour"),
-      endDate: moment().startOf("hour").add(32, "hour"),
       locale: {
-        format: "DD MMM YYYY HH:mm",
-        monthNames: [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December",
-        ],
+        cancelLabel: "Clear",
       },
     });
+
+    $('input[name="datetimes"]').on(
+      "apply.daterangepicker",
+      function (ev, picker) {
+        $(this).val(
+          picker.startDate.format("DD MMM YYYY HH:mm") +
+            " - " +
+            picker.endDate.format("DD MMM YYYY HH:mm")
+        );
+      }
+    );
+
+    $('input[name="datetimes"]').on(
+      "cancel.daterangepicker",
+      function (ev, picker) {
+        $(this).val("");
+      }
+    );
   });
 });

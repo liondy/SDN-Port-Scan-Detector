@@ -85,7 +85,7 @@
                 <label for="datetime" class="col-form-label">Pilih rentang waktu</label>
               </div>
               <div class="col-10">
-                <input type="text" class="form-control" name="datetimes" id="datetimes" />
+                <input type="text" class="form-control" name="datetimes" id="datetimes" placeholder="Pilih rentang waktu" value="" />
               </div>
             </div>
             <div class="mt-3 float-end">
