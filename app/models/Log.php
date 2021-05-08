@@ -20,7 +20,7 @@ class Log
     $logs = [];
     $i = 0;
     foreach ($all_timestamps as $curTimestamp) {
-      $timestamp = $curTimestamp["timestamp"]; #extract each timestamp
+      $timestamp = $curTimestamp; #extract each timestamp
 
       $curLogs = $this->getLogs($timestamp);
 
@@ -76,7 +76,7 @@ class Log
   {
     // var_dump($filters);
     // echo "<br>" . count($filters) . "<br>";
-    $query = "select DISTINCT(`$this->table`.`timestamp`) from `$this->table` inner join `teknik` on `$this->table`.`idT` = `teknik`.`idT` inner join `log_port` on `log_port`.`idL` = `log`.`idL`";
+    $query = "select `$this->table`.`idL`, `$this->table`.`timestamp` from `$this->table` inner join `teknik` on `$this->table`.`idT` = `teknik`.`idT` inner join `log_port` on `log_port`.`idL` = `log`.`idL`";
     if (!empty($filters)) {
       $where = " where ";
       $firstFilter = true;
@@ -101,6 +101,8 @@ class Log
             $queryTeknik .= ")";
           }
           $where .= $queryTeknik;
+        } else if ($keyFilter == "timestamp") {
+          $where .= $keyFilter . " BETWEEN '" . $filters[$keyFilter][0] . "' AND '" . $filters[$keyFilter][1] . "'";
         } else if ($keyFilter !== "port") {
           $where .= $keyFilter . " = " . "'$filters[$keyFilter]'";
         }
@@ -112,42 +114,35 @@ class Log
       //   echo array_keys($filters) . "<br>";
       // }
     }
+    $query .= " order by `$this->table`.`idL`";
     // echo "<br><br>" . $query . "<br>";
     $timestamps = $this->db->query($query);
+    $distinctTimestamps = $this->distinct($timestamps);
     // var_dump($timestamps);
-    return array_reverse($timestamps);
+    return $distinctTimestamps;
   }
 
-  private function getLogs($timestamp, $filters = null)
+  private function distinct($data)
+  {
+    $distinctTimestamps = [];
+    foreach ($data as $log) {
+      $curTimestamp = $log["timestamp"];
+      if (!in_array($curTimestamp, $distinctTimestamps["timestamp"])) {
+        $distinctTimestamps["timestamp"][] = $curTimestamp;
+      }
+    }
+    return array_reverse($distinctTimestamps["timestamp"]);
+  }
+
+  private function getLogs($timestamp)
   {
     if (isset($timestamp)) {
       $timestamp = $this->db->escapeString($timestamp);
       $condition = "where `$this->table`.`timestamp` = '$timestamp'";
 
-      if ($filters) {
-        if ($filters["source"] != "") {
-          $src = $this->db->escapeString($filters["source"]);
-          $condition .= " and `$this->table`.`source` = '$src'";
-        }
-        if ($filters["destination"] != "") {
-          $dst = $this->db->escapeString($filters["destination"]);
-          $condition .= " and `$this->table`.`destination` = '$dst'";
-        }
-      }
-
       $get_logs_by_timestamp = "select * from `$this->table` inner join `teknik` on `$this->table`.`idT` = `teknik`.`idT` $condition order by `$this->table`.`idL`";
       $curLogs = $this->db->query($get_logs_by_timestamp);
       return $curLogs;
-    }
-  }
-
-  private function getIP($type)
-  {
-    if (isset($type)) {
-      $query = "select distinct(" . $type . ") from `$this->table`";
-      $result = $this->db->query($query);
-      var_dump($result);
-      return $result;
     }
   }
 }

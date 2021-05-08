@@ -1,6 +1,20 @@
 let isFilter = false;
 let srcList = [];
 let dstList = [];
+const months = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 $(document).ready(function () {
   // function getData(queryFilters = []) {
   //   const queryString = window.location.search;
@@ -145,8 +159,25 @@ $(document).ready(function () {
     }
 
     let datetime = $("#datetimes").val();
-    console.log(datetime);
-    // execute(filters);
+    if (datetime) {
+      let timestamps = datetime.split("-");
+      let start = timestamps[0].trim().split(" ");
+      let finish = timestamps[1].trim().split(" ");
+      console.log(start);
+      let numS = months.indexOf(start[1]) + 1;
+      if (numS < 10) {
+        numS = "0" + numS;
+      }
+      let numF = months.indexOf(finish[1]) + 1;
+      if (numF < 10) {
+        numF = "0" + numF;
+      }
+      filters += `&ds=${start[0] + numS + start[2]}&ms=${start[3]}&df=${
+        finish[0] + numF + finish[2]
+      }&mf=${finish[3]}`;
+    }
+    console.log(filters);
+    execute(filters);
   });
 
   $(".changePage").on("click", function (e) {

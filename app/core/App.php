@@ -58,54 +58,71 @@ class App
       $url[] = $this->filterURL($part);
 
       //tcp
-      $partTCP = $_GET["tcp"];
-      $stringTCP = $this->filterURL($partTCP);
-      $url[] = $stringTCP === 'true' ? true : false;
+      $part = $_GET["tcp"];
+      $string = $this->filterURL($part);
+      $url[] = $string === 'true' ? true : false;
 
       //udp
-      $partUDP = $_GET["udp"];
-      $stringUDP = $this->filterURL($partUDP);
-      $url[] = $stringUDP === 'true' ? true : false;
+      $part = $_GET["udp"];
+      $string = $this->filterURL($part);
+      $url[] = $string === 'true' ? true : false;
 
       //stealth
-      $partSYN = $_GET["syn"];
-      $stringSYN = $this->filterURL($partSYN);
-      $url[] = $stringSYN === 'true' ? true : false;
+      $part = $_GET["syn"];
+      $string = $this->filterURL($part);
+      $url[] = $string === 'true' ? true : false;
 
       //connect
-      $partCon = $_GET["con"];
-      $stringCon = $this->filterURL($partCon);
-      $url[] = $stringCon === 'true' ? true : false;
+      $part = $_GET["con"];
+      $string = $this->filterURL($part);
+      $url[] = $string === 'true' ? true : false;
 
       //null
-      $partNull = $_GET["null"];
-      $stringNull = $this->filterURL($partNull);
-      $url[] = $stringNull === 'true' ? true : false;
+      $part = $_GET["null"];
+      $string = $this->filterURL($part);
+      $url[] = $string === 'true' ? true : false;
 
       //fin
-      $partFin = $_GET["fin"];
-      $stringFin = $this->filterURL($partFin);
-      $url[] = $stringFin === 'true' ? true : false;
+      $part = $_GET["fin"];
+      $string = $this->filterURL($part);
+      $url[] = $string === 'true' ? true : false;
 
       //xmas
-      $partXmas = $_GET["xmas"];
-      $stringXmas = $this->filterURL($partXmas);
-      $url[] = $stringXmas === 'true' ? true : false;
+      $part = $_GET["xmas"];
+      $string = $this->filterURL($part);
+      $url[] = $string === 'true' ? true : false;
 
       //ack/window
-      $partAck = $_GET["ack"];
-      $stringAck = $this->filterURL($partAck);
-      $url[] = $stringAck === 'true' ? true : false;
+      $part = $_GET["ack"];
+      $string = $this->filterURL($part);
+      $url[] = $string === 'true' ? true : false;
 
       //maimon
-      $partMaimon = $_GET["maimon"];
-      $stringMaimon = $this->filterURL($partMaimon);
-      $url[] = $stringMaimon === 'true' ? true : false;
+      $part = $_GET["maimon"];
+      $string = $this->filterURL($part);
+      $url[] = $string === 'true' ? true : false;
 
       //udp scan
-      $partUDPS = $_GET["udpS"];
-      $stringUDPS = $this->filterURL($partUDPS);
-      $url[] = $stringUDPS === 'true' ? true : false;
+      $part = $_GET["udpS"];
+      $string = $this->filterURL($part);
+      $url[] = $string === 'true' ? true : false;
+
+      //date start
+      $part = $_GET["ds"];
+      $string = $this->filterURL($part);
+      $url[] = $string;
+      //minute start
+      $part = $_GET["ms"];
+      $string = $this->filterURL($part);
+      $url[] = $string;
+      //date finish
+      $part = $_GET["df"];
+      $string = $this->filterURL($part);
+      $url[] = $string;
+      //minute finish
+      $part = $_GET["mf"];
+      $string = $this->filterURL($part);
+      $url[] = $string;
     }
     return $url;
   }

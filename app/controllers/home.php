@@ -4,9 +4,9 @@ class Home extends Controller
 
   private $filters;
 
-  public function index($page = 1, $src = "", $dst = "", $tcp = false, $udp = false, $syn = false, $con = false, $null = false, $fin = false, $xmas = false, $ack = false, $maimon = false, $udpS = false)
+  public function index($page = 1, $src = "", $dst = "", $tcp = false, $udp = false, $syn = false, $con = false, $null = false, $fin = false, $xmas = false, $ack = false, $maimon = false, $udpS = false, $ds = "", $ms = "", $df = "", $mf = "")
   {
-    //insert filters
+    //insert filters for src and dest
     if ($src != "") {
       $this->filters["source"] = $src;
       $data["source"] = $src;
@@ -16,6 +16,7 @@ class Home extends Controller
       $data["destination"] = $src;
     }
 
+    //insert filters for protocol
     if (!$tcp || !$udp) {
       if ($tcp) {
         $this->filters["protokol"] = "TCP";
@@ -26,6 +27,7 @@ class Home extends Controller
       }
     }
 
+    //insert filters for teknik
     if ((!$syn || !$con || !$null || !$fin || !$xmas || !$ack || !$maimon || !$udpS) && ($syn || $con || $null || $fin || $xmas || $ack || $maimon || $udpS)) {
       // if ($syn == false && $con == false && $null == false && $fin == false && $xmas == false && $ack == false && $maimon == false && $udpS == false) {
       // } else {
@@ -55,6 +57,23 @@ class Home extends Controller
         $this->filters["nama_teknik"][] = "UDP SCAN";
         // }
       }
+    }
+
+    //insert filters for timestamp
+    if ($ds != "" && $ms != "" && $df != "" && $mf != "") {
+      $dateStart = substr($ds, 0, 2);
+      $monthStart = substr($ds, 2, 2);
+      $yearStart = substr($ds, 4);
+      $start = $yearStart . "-" . $monthStart . "-" . $dateStart . " " . $ms . ":00";
+      // echo "Start: " . $start . "<br>";
+
+      $dateFinish = substr($df, 0, 2);
+      $monthFinish = substr($df, 2, 2);
+      $yearFinish = substr($df, 4);
+      $finish = $yearFinish . "-" . $monthFinish . "-" . $dateFinish . " " . $mf . ":00";
+      // echo "Finish: " . $finish . "<br>";
+      $this->filters["timestamp"][] = $start;
+      $this->filters["timestamp"][] = $finish;
     }
 
     // var_dump($this->filters);
@@ -115,6 +134,11 @@ class Home extends Controller
             $firstTeknik = false;
           }
           $data["message"] .= $queryTeknik;
+        } else if ($keyFilter === "timestamp") {
+          $months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+          $monthS = $months[(int)$monthStart - 1];
+          $monthF = $months[(int)$monthFinish - 1];
+          $data["message"] .= " $keyFilter antara $dateStart $monthS $yearStart pukul $ms dan $dateFinish $monthF $yearFinish pukul $mf";
         } else {
           $data["message"] .= $keyFilter . " = " . $this->filters[$keyFilter];
         }
