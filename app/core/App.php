@@ -8,23 +8,15 @@ class App
   public function __construct()
   {
     $url = $this->parseURL();
-
-    //controller
-    if (file_exists('../app/controllers/' . $url[0] . '.php')) {
-      $this->controller = $url[0];
-      unset($url[0]);
+    if ($url != 0) {
+      $this->execute($url);
     }
+  }
 
+  private function execute($url)
+  {
     require_once '../app/controllers/' . $this->controller . '.php';
     $this->controller = new $this->controller;
-
-    //method
-    if (isset($url[1])) {
-      if (method_exists($this->controller, $url[1])) {
-        $this->method = $url[1];
-        unset($url[1]);
-      }
-    }
 
     //params
     if (!empty($url)) {
@@ -123,8 +115,35 @@ class App
       $part = $_GET["mf"];
       $string = $this->filterURL($part);
       $url[] = $string;
+      return $url;
+    } else if ($_SERVER["REQUEST_METHOD"] == "POST") {
+      $c = $_POST["controller"];
+      $m = $_POST["method"];
+
+      $controller = "";
+
+      //controller
+      if (file_exists('../app/controllers/' . $c . '.php')) {
+        $controller = $c;
+      }
+
+      require_once '../app/controllers/' . $controller . '.php';
+      $controller = new $controller;
+
+      $method = "";
+
+      //method
+      if (isset($m)) {
+        if (method_exists($controller, $m)) {
+          $method = $m;
+        }
+      }
+
+      $param = [];
+
+      //execute controller & method with params if exist
+      call_user_func_array([$controller, $method], $param);
     }
-    return $url;
   }
 
   private function filterURL($url)

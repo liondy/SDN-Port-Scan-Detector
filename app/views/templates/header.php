@@ -27,6 +27,7 @@
       <div class="collapse" id="toggleFilter">
         <div class="card card-body">
           <form class="filter">
+            <input type="hidden" name="jumlah_data" id="jumlah_data" value=<?= $data["jumlah_data"]; ?>>
             <input type="hidden" name="page" id="page" value=<?= $data["halaman"]; ?>>
             <input type="hidden" name="total_halaman" id="total_halaman" value=<?= $data["total_halaman"]; ?>>
             <input type="hidden" name="srcLst" id="srcLst" value=<?= json_encode($data["sources"]); ?>>

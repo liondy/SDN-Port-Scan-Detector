@@ -16,37 +16,34 @@ const months = [
   "Dec",
 ];
 $(document).ready(function () {
-  // function getData(queryFilters = []) {
-  //   const queryString = window.location.search;
-  //   const urlParams = new URLSearchParams(queryString);
-  //   $.ajax({
-  //     type: "POST",
-  //     url: "log.php",
-  //     data: {
-  //       halaman: urlParams.get("page"),
-  //       filter: queryFilters,
-  //       src: queryFilters["source"],
-  //       dst: queryFilters["destination"],
-  //     },
-  //     success: function (data) {
-  //       $("#output").html(data);
-  //     },
-  //   });
-  // }
+  let jumlah_data = $("#jumlah_data").val();
+  console.log(jumlah_data);
+  function getData() {
+    $.ajax({
+      method: "post",
+      url: "http://liondy/status/public/",
+      data: {
+        controller: "home",
+        method: "reload",
+      },
+      type: "text",
+      success: function (data) {
+        if (data > jumlah_data) {
+          $("#liveToast").removeClass("hide");
+          $("#liveToast").addClass("show");
+        }
+      },
+    });
+  }
 
-  // if (isFilter) {
-  //   getData(filters);
-  // } else {
-  //   getData();
-  // }
+  setInterval(function () {
+    getData();
+  }, 10000); // it will refresh your data every 10 sec
 
-  // setInterval(function () {
-  //   if (isFilter) {
-  //     getData(filters);
-  //   } else {
-  //     getData();
-  //   }
-  // }, 60000); // it will refresh your data every 10 sec
+  $("#dismiss-toast").on("click", function (e) {
+    $("#liveToast").removeClass("show");
+    $("#liveToast").addClass("hide");
+  });
 
   $("#tcpcheckbox").on("click", function (e) {
     if ($("#tcpcheckbox").prop("checked")) {

@@ -191,6 +191,7 @@ class Home extends Controller
 
     //for pagination, will be used in footer
     $jumlah_data = count($data["filtered"]);
+    $data["jumlah_data"] = $jumlah_data;
     // echo "<br>Jumlah Data: " . $jumlah_data;
     $data["total_halaman"] = ceil($jumlah_data / $pagination);
     if ($jumlah_data == 0) {
@@ -213,26 +214,10 @@ class Home extends Controller
     $this->view('templates/footer', $data);
   }
 
-  private function filtered($data, $filter)
+  public function reload()
   {
-    $filteredLog = [];
-    foreach ($data as $log) {
-      if ($this->isValid($log, $filter)) {
-        $filteredLog[] = $log;
-      }
-    }
-    return $filteredLog;
-  }
-
-  private function isValid($log, $filter)
-  {
-    // var_dump($log);
-    // echo "=====================================================================================================================";
-    // var_dump($filter);
-    $filtered = array_intersect_key($log, $filter);
-    // echo "=====================================================================================================================";
-    // var_dump($filter);
-    return $filter == $filtered;
+    $this->model('Log_Port');
+    $this->model('Log')->recount();
   }
 
   private function paginate($data, $halaman_awal, $batas)

@@ -4,14 +4,12 @@ class Log
   private $table;
   private $table_log_port;
   private $db;
-  private $logs;
 
   public function __construct()
   {
     $this->table = 'log';
     $this->db = new Database;
     $this->table_log_port = new Log_Port;
-    $this->logs = [];
   }
 
   public function exportLog($filters = [])
@@ -144,5 +142,14 @@ class Log
       $curLogs = $this->db->query($get_logs_by_timestamp);
       return $curLogs;
     }
+  }
+
+  public function recount()
+  {
+    $query = "select distinct(`log`.`timestamp`) from `log`";
+    $logs = $this->db->query($query);
+    $result = count($logs);
+    echo $result;
+    return $result;
   }
 }
