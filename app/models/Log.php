@@ -149,7 +149,6 @@ class Log
     $query = "select distinct(`log`.`timestamp`) from `log`";
     $logs = $this->db->query($query);
     $result = count($logs);
-    echo $result;
     return $result;
   }
 }

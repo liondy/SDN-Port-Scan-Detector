@@ -217,7 +217,7 @@ class Home extends Controller
   public function reload()
   {
     $this->model('Log_Port');
-    $this->model('Log')->recount();
+    echo $this->model('Log')->recount();
   }
 
   private function paginate($data, $halaman_awal, $batas)

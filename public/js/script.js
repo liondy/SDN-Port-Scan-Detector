@@ -17,7 +17,6 @@ const months = [
 ];
 $(document).ready(function () {
   let jumlah_data = $("#jumlah_data").val();
-  console.log(jumlah_data);
   function getData() {
     $.ajax({
       method: "post",
@@ -28,7 +27,7 @@ $(document).ready(function () {
       },
       type: "text",
       success: function (data) {
-        if (data > jumlah_data) {
+        if (parseInt(data) > parseInt(jumlah_data)) {
           $("#liveToast").removeClass("hide");
           $("#liveToast").addClass("show");
         }
@@ -39,6 +38,10 @@ $(document).ready(function () {
   setInterval(function () {
     getData();
   }, 10000); // it will refresh your data every 10 sec
+
+  $(".reload").on("click", function (e) {
+    execute("");
+  });
 
   $("#dismiss-toast").on("click", function (e) {
     $("#liveToast").removeClass("show");
