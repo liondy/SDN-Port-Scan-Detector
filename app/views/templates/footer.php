@@ -22,7 +22,7 @@
 </nav>
 </div>
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
-  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+  <div id="liveToast" class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header bg-danger text-white">
       <strong class="me-auto">&#10069; SDN Controller</strong>
       <small>urgent now</small>
@@ -30,7 +30,7 @@
     </div>
     <div class="toast-body">
       Controller mendeteksi adanya aktivitas baru
-      <div class="mt-2 pt-2 border-top">
+      <div class="mt-2 pt-2 border-top d-flex justify-content-end">
         <button type="button" class="btn btn-danger btn-sm reload">Reload</button>
       </div>
     </div>
