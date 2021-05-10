@@ -218,6 +218,39 @@ $(document).ready(function () {
       filters += `&udp=true`;
     }
 
+    let syn = urlParams.get("syn");
+    if (syn === "true") {
+      filters += `&syn=true`;
+    }
+    let con = urlParams.get("con");
+    if (con === "true") {
+      filters += `&con=true`;
+    }
+    let nul = urlParams.get("null");
+    if (nul === "true") {
+      filters += `&null=true`;
+    }
+    let fin = urlParams.get("fin");
+    if (fin === "true") {
+      filters += `&fin=true`;
+    }
+    let xmas = urlParams.get("xmas");
+    if (xmas === "true") {
+      filters += `&xmas=true`;
+    }
+    let ack = urlParams.get("ack");
+    if (ack === "true") {
+      filters += `&ack=true`;
+    }
+    let maimon = urlParams.get("maimon");
+    if (maimon === "true") {
+      filters += `&maimon=true`;
+    }
+    let udpS = urlParams.get("udpS");
+    if (udpS === "true") {
+      filters += `&udpS=true`;
+    }
+
     let ds = urlParams.get("ds");
     if (ds) {
       filters += `&ds=${ds}`;

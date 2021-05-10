@@ -191,7 +191,7 @@ class Home extends Controller
 
     //for pagination, will be used in footer
     $jumlah_data = count($data["filtered"]);
-    $data["jumlah_data"] = $jumlah_data;
+    $data["jumlah_data"] = $log_model->getLiteralTimestamps();
     // echo "<br>Jumlah Data: " . $jumlah_data;
     $data["total_halaman"] = ceil($jumlah_data / $pagination);
     if ($jumlah_data == 0) {

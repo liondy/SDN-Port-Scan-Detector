@@ -56,6 +56,14 @@ class Log
     return $logs;
   }
 
+  public function getLiteralTimestamps()
+  {
+    $query = "select distinct(`$this->table`.`timestamp`) from `$this->table`";
+    $logs = $this->db->query($query);
+    $result = count($logs);
+    return $result;
+  }
+
   public function extractAllSource()
   {
     $query = "select distinct(`$this->table`.`source`) from $this->table";
@@ -119,6 +127,8 @@ class Log
     // var_dump($timestamps);
     return $distinctTimestamps;
   }
+
+
 
   private function distinct($data)
   {
