@@ -22,7 +22,7 @@
 </nav>
 </div>
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
-  <div id="liveToast" class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header bg-danger text-white">
       <strong class="me-auto">&#10069; SDN Controller</strong>
       <small>urgent now</small>
