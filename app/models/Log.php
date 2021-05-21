@@ -20,7 +20,7 @@ class Log
     foreach ($all_timestamps as $curTimestamp) {
       $timestamp = $curTimestamp; #extract each timestamp
 
-      $curLogs = $this->getLogs($timestamp);
+      $curLogs = $this->getLogs($timestamp, $filters);
 
       $logs[] = $curLogs[0]; #insert the first log to our presentation logs
 
@@ -124,7 +124,7 @@ class Log
     // echo "<br><br>" . $query . "<br>";
     $timestamps = $this->db->query($query);
     $distinctTimestamps = $this->distinct($timestamps);
-    // var_dump($timestamps);
+    // var_dump($distinctTimestamps);
     return $distinctTimestamps;
   }
 
@@ -142,13 +142,33 @@ class Log
     return array_reverse($distinctTimestamps["timestamp"]);
   }
 
-  private function getLogs($timestamp)
+  private function getLogs($timestamp, $filters)
   {
     if (isset($timestamp)) {
       $timestamp = $this->db->escapeString($timestamp);
       $condition = "where `$this->table`.`timestamp` = '$timestamp'";
 
+      if (!empty($filters["nama_teknik"])) {
+        $condition .= " and ";
+        if (count($filters["nama_teknik"]) > 1) {
+          $queryTeknik = "(";
+        }
+        $firstTeknik = true;
+        foreach ($filters["nama_teknik"] as $teknik) {
+          if (!$firstTeknik) {
+            $queryTeknik .= " or ";
+          }
+          $queryTeknik .= "nama_teknik" . " = " . "'$teknik'";
+          $firstTeknik = false;
+        }
+        if (count($filters["nama_teknik"]) > 1) {
+          $queryTeknik .= ")";
+        }
+        $condition .= $queryTeknik;
+      }
+
       $get_logs_by_timestamp = "select * from `$this->table` inner join `teknik` on `$this->table`.`idT` = `teknik`.`idT` $condition order by `$this->table`.`idL`";
+      // echo "<br><br>" . $get_logs_by_timestamp;
       $curLogs = $this->db->query($get_logs_by_timestamp);
       return $curLogs;
     }
